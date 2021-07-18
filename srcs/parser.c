@@ -256,4 +256,5 @@ void		parser(t_rtv *rtv, int argc, char **argv)
 	validate(rtv, root);
 	free_parsed_struct(root);
 	free(memory);
+	//printf("parser func over\n");
 }

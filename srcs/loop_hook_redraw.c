@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop_hook_redraw.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oadhesiv <secondfry+school21@gmail.com>    +#+  +:+       +#+        */
+/*   By: pcarolei <pcarolei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 10:39:04 by oadhesiv          #+#    #+#             */
-/*   Updated: 2021/07/17 18:23:11 by oadhesiv         ###   ########.fr       */
+/*   Updated: 2021/07/18 18:57:24 by pcarolei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,24 @@ static void	*run_parametrized(void *params)
 	pthread_exit(NULL);
 }
 
-// static void	run_single(t_rtv *rtv)
-// {
-// 	short	yc;
-// 	short	xc;
+static void	run_single(t_rtv *rtv)
+{
+	short	yc;
+	short	xc;
 
-// 	yc = -1 * HEIGHT / 2 + 1;
-// 	while (yc <= HEIGHT / 2)
-// 	{
-// 		xc = -1 * WIDTH / 2;
-// 		while (xc < WIDTH / 2)
-// 		{
-// 			process_pixel(rtv, xc, yc);
-// 			xc++;
-// 		}
-// 		yc++;
-// 	}
-// }
+	yc = -1 * HEIGHT / 2 + 1;
+	while (yc <= HEIGHT / 2)
+	{
+		xc = -1 * WIDTH / 2;
+		while (xc < WIDTH / 2)
+		{
+			//printf("before process_pixel, xc = %d, yc = %d\n", xc, yc);
+			process_pixel(rtv, xc, yc);
+			xc++;
+		}
+		yc++;
+	}
+}
 
 static void	correct_first_param(t_rtv *rtv, t_params *param)
 {
@@ -96,16 +97,19 @@ static void	run_parallel(t_rtv *rtv)
 	t_params	param[THREAD_COUNT];
 	t_byte		i;
 
+	//printf("before prepare parallel params\n");
 	prepare_parellel_params(rtv, param);
 	i = 0;
 	while (i < THREAD_COUNT)
 	{
+		//printf("before pthread create\n");
 		pthread_create(&tid[i], NULL, run_parametrized, &param[i]);
 		i++;
 	}
 	i = 0;
 	while (i < THREAD_COUNT)
 	{
+		//printf("before pthread join\n");
 		pthread_join(tid[i], NULL);
 		i++;
 	}
@@ -113,11 +117,17 @@ static void	run_parallel(t_rtv *rtv)
 
 void	loop_redraw(t_rtv *rtv)
 {
+	//printf("start!!\n");
 	if (!(rtv->flags & FLAG_REDRAW))
 		return ;
+	//printf("before ft_bzero\n");
 	ft_bzero(rtv->mlx->img_data, rtv->mlx->size_line_char * HEIGHT);
+	//printf("before flag assign\n");
 	rtv->flags -= FLAG_REDRAW;
+	//printf("before run_parallel\n");
 	run_parallel(rtv);
+	//printf("before put image to window\n");
 	mlx_put_image_to_window(\
 		rtv->mlx->mlx, rtv->mlx->win, rtv->mlx->img, 0, 0);
+	//printf("after put image to window\n");
 }

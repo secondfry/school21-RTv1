@@ -6,7 +6,7 @@
 /*   By: pcarolei <pcarolei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 15:52:15 by oadhesiv          #+#    #+#             */
-/*   Updated: 2021/07/18 09:04:03 by pcarolei         ###   ########.fr       */
+/*   Updated: 2021/07/18 18:58:29 by pcarolei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,14 @@ int	main(int argc, char **argv)
 	check_defines();
 	init_rtv(&rtv);
 	parser(&rtv, argc, argv);
+	printf("after parsing\n");
 	init_mlx(&mlx);
+	printf("mlx initialized\n");
 	init_mlx_image(&mlx);
+	printf("mlx image initialized\n");
 	rtv.mlx = &mlx;
 	init_mlx_hooks(&rtv);
+	printf("mlx hooks initialized\n");
 	mlx_loop(mlx.mlx);
 	return (0);
 }

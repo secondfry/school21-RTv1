@@ -42,7 +42,7 @@ static t_color	pre_light(t_rtv *rtv, t_worker_data *data, t_intersection *intr)
 		&params.N, find_normal(rtv, intr, &params));
 	vector_set_by_value(&params.V, vector_mult(data->vectors[VCTR_D], -1));
 	intensity = light(rtv, &params);
-	return (color_mult(params.color, intensity));
+	return (*color_mult(&params.color, intensity));
 }
 
 static t_color	raytrace(
@@ -64,7 +64,7 @@ static t_color	raytrace(
 		}) \
 	);
 	if (intr.distance == 1.0 / 0.0)
-		return (color_new(0, 0, 0));
+		return ((t_color){0, 0, 0});
 	return (pre_light(rtv, data, &intr));
 }
 
@@ -73,27 +73,37 @@ static void	canvas_to_screen(t_rtv *rtv, short xc, short yc, t_color color)
 	t_ushort	xs;
 	t_ushort	ys;
 
+	////printf("IN CANVAS TO SCREEN. xc = %d, yc = %d\n", xc, yc);
+	////printf("IN CANVAS TO SCREEN. red = %d, green = %d, blue = %d\n", color[0], color[1], color[2]);
 	xs = WIDTH / 2 + xc;
 	ys = HEIGHT / 2 - yc;
-	rtv->mlx->img_data[ys * rtv->mlx->size_line_int + xs] = color_to_int(color);
+	////printf("IN CANVAS TO SCREEN. xs = %d, ys = %d\n", xs, ys);
+	rtv->mlx->img_data[ys * rtv->mlx->size_line_int + xs] = color_to_int(&color);
 }
 
 void	process_pixel(t_rtv *rtv, short xc, short yc)
 {
 	t_color				color;
+	// ////printf("before vector normalize\n");
 	const t_vector_4	D = vector_normalize(matrix_on_vector(
 		rtv->camera_rotation,
 		(t_vector_4){(float) xc / WIDTH, (float) yc / HEIGHT, 1.f, 0}
 	));
 	t_worker_data		data;
 
+	//////printf("before vector set1\n");
 	vector_set(data.vectors + VCTR_O, &rtv->camera_position);
+	////printf("before vector set2\n");
 	vector_set(data.vectors + VCTR_D, &D);
+	////printf("before vector dot\n");
 	data.floats[D_DOT_D] = vector_dot(\
 		data.vectors[VCTR_D], \
 		data.vectors[VCTR_D] \
 	);
+	////printf("before raytrayce\n");
 	color = raytrace(rtv, &data, 1.0f, 1.0 / 0.0);
+	////printf("before canvas to screen\n");
 	canvas_to_screen(rtv, xc, yc, color);
-	free(color);
+	////printf("before free\n");
+	// free(color);
 }

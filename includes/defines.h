@@ -6,7 +6,7 @@
 /*   By: pcarolei <pcarolei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 15:58:36 by oadhesiv          #+#    #+#             */
-/*   Updated: 2021/07/18 13:38:51 by pcarolei         ###   ########.fr       */
+/*   Updated: 2021/07/18 09:06:25y pcarolei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef int			(*t_mlx_hook)();
 typedef float				*t_matrix_4;
 typedef float				*t_quaterion;
 typedef int					(*t_mlx_hook)();
-typedef t_byte				*t_color;
+// typedef t_byte				*t_color;
 
 # define TCRED		0
 # define TCGREEN	1
